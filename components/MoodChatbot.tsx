@@ -34,7 +34,7 @@ export const MoodChatbot: React.FC<Props> = ({ setMood }) => {
       <Typography variant="subtitle1" gutterBottom>
         Describe your current mood or situation:
       </Typography>
-      <TextField
+      {/* <TextField
         fullWidth
         label="Type something..."
         variant="outlined"
@@ -45,7 +45,7 @@ export const MoodChatbot: React.FC<Props> = ({ setMood }) => {
       />
       <Button variant="contained" onClick={handleSubmit} disabled={loading}>
         {loading ? "Analyzing..." : "Analyze Mood"}
-      </Button>
+      </Button> */}
       {response && (
         <Typography sx={{ mt: 2 }} color="primary">
           {response}
