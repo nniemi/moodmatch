@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import moodReducer from "../features/mood/moodSlice";
+import spotifyReducer from "../features/spotifySlice";
 
 export const store = configureStore({
   reducer: {
     mood: moodReducer,
+    spotify: spotifyReducer,
   },
 });
 
