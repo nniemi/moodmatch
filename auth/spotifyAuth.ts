@@ -9,13 +9,13 @@ export const getSpotifyAuthUrl = () => {
 
   if (!clientId) {
     throw new Error(
-      "SPOTIFY_CLIENT_ID is not defined in the environment variables."
+      "NEXT_PUBLIC_SPOTIFY_CLIENT_ID is not defined in the environment variables."
     );
   }
 
   if (!redirectUri) {
     throw new Error(
-      "SPOTIFY_REDIRECT_URI is not defined in the environment variables."
+      "NEXT_PUBLIC_SPOTIFY_REDIRECT_URI is not defined in the environment variables."
     );
   }
 
@@ -78,7 +78,16 @@ export const isAuthenticated = (): boolean => {
     cookie.trim().startsWith("spotify_access_token=")
   );
 
-  return !!spotifyToken;
+  const hasToken = !!spotifyToken;
+  console.log("Auth check - Has token:", hasToken);
+  if (hasToken) {
+    console.log(
+      "Auth check - Token found:",
+      spotifyToken?.substring(0, 20) + "..."
+    );
+  }
+
+  return hasToken;
 };
 
 // Utility function to get access token from cookies
@@ -91,9 +100,12 @@ export const getAccessToken = (): string | null => {
   );
 
   if (spotifyToken) {
-    return spotifyToken.split("=")[1];
+    const token = spotifyToken.split("=")[1];
+    console.log("Getting access token:", token.substring(0, 20) + "...");
+    return token;
   }
 
+  console.log("No access token found in cookies");
   return null;
 };
 
@@ -101,9 +113,11 @@ export const getAccessToken = (): string | null => {
 export const logout = (): void => {
   if (typeof document === "undefined") return; // Server-side check
 
+  console.log("Logging out - clearing cookie");
+
   // Clear the cookie by setting it to expire in the past
   document.cookie =
-    "spotify_access_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+    "spotify_access_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; Domain=.vercel.app";
 
   // Reload the page to show the landing page
   window.location.reload();

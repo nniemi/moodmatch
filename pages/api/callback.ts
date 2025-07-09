@@ -15,15 +15,24 @@ export default async function handler(
     return res.status(400).json({ error: "No authorization code provided" });
   }
 
+  // Debug: Log the values being sent to Spotify
+  const redirectUri = process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI;
+  const clientId = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
+  const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
+
+  console.log("Debug - Redirect URI being sent:", redirectUri);
+  console.log("Debug - Client ID being sent:", clientId);
+  console.log("Debug - Client Secret set:", clientSecret ? "Yes" : "No");
+
   try {
     const tokenResponse = await axios.post(
       "https://accounts.spotify.com/api/token",
       new URLSearchParams({
         grant_type: "authorization_code",
         code: code,
-        redirect_uri: process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI!,
-        client_id: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID!,
-        client_secret: process.env.SPOTIFY_CLIENT_SECRET!,
+        redirect_uri: redirectUri!,
+        client_id: clientId!,
+        client_secret: clientSecret!,
       }),
       {
         headers: {
@@ -34,11 +43,21 @@ export default async function handler(
 
     const { access_token, refresh_token, expires_in } = tokenResponse.data;
     console.log("Token received successfully");
+    console.log("Token expires in:", expires_in, "seconds");
 
-    res.setHeader(
-      "Set-Cookie",
-      `spotify_access_token=${access_token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${expires_in}`
-    );
+    // Set the access token as an HTTP-only cookie with better options
+    const isProduction = process.env.NODE_ENV === "production";
+    const cookieOptions = [
+      `spotify_access_token=${access_token}`,
+      "Path=/",
+      "HttpOnly",
+      "SameSite=Lax",
+      `Max-Age=${expires_in}`,
+      ...(isProduction ? ["Secure"] : []), // Only add Secure in production
+    ].join("; ");
+
+    console.log("Setting cookie with options:", cookieOptions);
+    res.setHeader("Set-Cookie", cookieOptions);
 
     console.log("Redirecting to main page...");
     res.redirect("/");

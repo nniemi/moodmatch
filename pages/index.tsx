@@ -16,8 +16,19 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    setAuthenticated(isAuthenticated());
-    setLoading(false);
+    // Check authentication status on client side with a small delay
+    // to ensure cookies are properly set after redirect
+    const checkAuth = () => {
+      const authStatus = isAuthenticated();
+      console.log("Main page - Authentication status:", authStatus);
+      setAuthenticated(authStatus);
+      setLoading(false);
+    };
+
+    // Add a small delay to ensure cookies are set after redirect
+    const timer = setTimeout(checkAuth, 500);
+
+    return () => clearTimeout(timer);
   }, []);
 
   if (loading) {
