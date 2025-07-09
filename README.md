@@ -1,36 +1,105 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MoodMatch Dashboard
 
-## Getting Started
+A modern Next.js dashboard that lets users log in with Spotify, view their recent tracks, and get music recommendations based on their mood. Built with security best practices: all authentication is handled server-side, and sensitive tokens are never exposed to the client.
 
-First, run the development server:
+## 🚀 Features
+
+- **Spotify OAuth Login** (secure, server-side)
+- **Personalized Dashboard** with recent tracks and mood-based recommendations
+- **Redux Toolkit** for state management
+- **Material UI** for a clean, modern look
+- **Secure Token Handling**: Access tokens are stored in HttpOnly cookies and never exposed to the frontend
+
+## 🛠️ Tech Stack
+
+- Next.js
+- React
+- Redux Toolkit
+- Material UI
+- Spotify Web API
+- TypeScript
+
+## 🏁 Getting Started
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/yourusername/moodmatch-dashboard.git
+cd moodmatch-dashboard
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Register Your App with Spotify
+
+- Go to the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
+- Create a new app
+- Add your callback URL to the app settings:
+  - For local development: `http://localhost:3000/api/callback`
+  - For production: `https://your-vercel-app.vercel.app/api/callback`
+
+### 4. Set Environment Variables
+
+Create a `.env.local` file for local development:
+
+```env
+NEXT_PUBLIC_SPOTIFY_CLIENT_ID=your_spotify_client_id
+NEXT_PUBLIC_SPOTIFY_REDIRECT_URI=http://localhost:3000/api/callback
+SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
+```
+
+For **Vercel deployment**, set these in your Vercel project settings:
+
+- `NEXT_PUBLIC_SPOTIFY_CLIENT_ID` (Spotify Client ID)
+- `NEXT_PUBLIC_SPOTIFY_REDIRECT_URI` (e.g. `https://your-vercel-app.vercel.app/api/callback`)
+- `SPOTIFY_CLIENT_SECRET` (Spotify Client Secret)
+
+### 5. Run the app locally
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🏗️ Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Deploy to [Vercel](https://vercel.com/) for best results. The app is optimized for Vercel's serverless environment.
 
-## Learn More
+## 🔒 Security Notes
 
-To learn more about Next.js, take a look at the following resources:
+- **Access tokens are stored in HttpOnly cookies** and are never accessible to client-side JavaScript.
+- **All authentication checks and token validation** are performed server-side via API routes.
+- **Logout** is handled securely via a POST request to `/api/logout`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🧪 Debugging & Health
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `/api/health` — Shows environment variable status
+- `/api/auth-status` — Checks if the user is authenticated (validates token with Spotify)
+- `/api/debug-cookies` — Shows cookies received by the server (for debugging only)
 
-## Deploy on Vercel
+## 📂 Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+components/         # React components (LandingPage, SpotifyWidget, etc.)
+features/           # Redux slices
+pages/              # Next.js pages and API routes
+  api/              # All backend API endpoints (auth, callback, health, etc.)
+auth/               # Spotify auth helpers
+app/                # Redux store
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🙏 Credits
+
+- [Spotify Web API](https://developer.spotify.com/documentation/web-api/)
+- [Next.js](https://nextjs.org/)
+- [Material UI](https://mui.com/)
+
+---
+
+**Enjoy MoodMatch!** 🎧
+
