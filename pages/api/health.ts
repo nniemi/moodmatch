@@ -6,11 +6,11 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     timestamp: new Date().toISOString(),
     environment: {
       // Frontend variables (public)
-      hasClientId: !!process.env.SPOTIFY_CLIENT_ID,
+      hasClientId: !!process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID,
       hasRedirectUri: !!process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI,
       redirectUri: process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI || "not set",
       // Backend variables (server-only)
-      hasServerClientId: !!process.env.SPOTIFY_CLIENT_ID,
+      hasServerClientId: !!process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID,
       hasServerClientSecret: !!process.env.SPOTIFY_CLIENT_SECRET,
       hasServerRedirectUri: !!process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI,
     },

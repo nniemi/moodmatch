@@ -1,5 +1,5 @@
 export const getSpotifyAuthUrl = () => {
-  const clientId = process.env.SPOTIFY_CLIENT_ID;
+  const clientId = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
   let redirectUri = process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI;
   const scopes = [
     "user-read-recently-played",
@@ -56,7 +56,7 @@ export const debugSpotifyConfig = () => {
   console.log("=== Spotify Config Debug ===");
   console.log(
     "Client ID:",
-    process.env.SPOTIFY_CLIENT_ID ? "✅ Set" : "❌ Missing"
+    process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID ? "✅ Set" : "❌ Missing"
   );
   console.log(
     "Redirect URI:",
