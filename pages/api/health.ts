@@ -5,10 +5,14 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     status: "ok",
     timestamp: new Date().toISOString(),
     environment: {
-      hasClientId: !!process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID,
-      hasClientSecret: !!process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET,
+      // Frontend variables (public)
+      hasClientId: !!process.env.SPOTIFY_CLIENT_ID,
       hasRedirectUri: !!process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI,
       redirectUri: process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI || "not set",
+      // Backend variables (server-only)
+      hasServerClientId: !!process.env.SPOTIFY_CLIENT_ID,
+      hasServerClientSecret: !!process.env.SPOTIFY_CLIENT_SECRET,
+      hasServerRedirectUri: !!process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI,
     },
     message: "API routes are working correctly",
   };

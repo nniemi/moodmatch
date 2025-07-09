@@ -22,8 +22,8 @@ export default async function handler(
         grant_type: "authorization_code",
         code: code,
         redirect_uri: process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI!,
-        client_id: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID!,
-        client_secret: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET!,
+        client_id: process.env.SPOTIFY_CLIENT_ID!,
+        client_secret: process.env.SPOTIFY_CLIENT_SECRET!,
       }),
       {
         headers: {
@@ -41,7 +41,6 @@ export default async function handler(
     );
 
     console.log("Redirecting to main page...");
-    // Redirect to the main page
     res.redirect("/");
   } catch (error: any) {
     console.error(
