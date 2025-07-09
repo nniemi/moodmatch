@@ -1,13 +1,10 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import { getSpotifyAuthUrl } from "../auth/spotifyAuth";
 
 const LandingPage: React.FC = () => {
-  const navigate = useNavigate();
-
   const handleLogin = () => {
     const authUrl = getSpotifyAuthUrl();
-    window.location.href = authUrl; // Redirect to Spotify OAuth
+    window.location.href = authUrl;
   };
 
   return (
@@ -32,4 +29,4 @@ const LandingPage: React.FC = () => {
   );
 };
 
-export default LandingPage; 
+export default LandingPage;

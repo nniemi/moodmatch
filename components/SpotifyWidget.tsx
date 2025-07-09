@@ -1,23 +1,19 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Paper, Typography, Button } from "@mui/material";
-import { fetchSpotifyAccessToken, fetchSpotifyRecentTracks } from "../features/spotifySlice";
-import { getSpotifyAuthUrl } from "../auth/spotifyAuth";
+import { fetchSpotifyRecentTracks } from "../features/spotifySlice";
+import { getSpotifyAuthUrl, getAccessToken } from "../auth/spotifyAuth";
 import { AppDispatch } from "../app/store";
 
 export const SpotifyWidget: React.FC = () => {
-  const { accessToken, recentTracks } = useSelector((state: any) => state.spotify);
+  const { recentTracks } = useSelector((state: any) => state.spotify);
   const dispatch = useDispatch<AppDispatch>();
+  const [accessToken, setAccessToken] = useState<string | null>(null);
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get("code");
-
-
-    if (code && !accessToken) {
-      dispatch(fetchSpotifyAccessToken(code));
-    }
-  }, [dispatch, accessToken]);
+    const token = getAccessToken();
+    setAccessToken(token);
+  }, []);
 
   useEffect(() => {
     if (accessToken) {
@@ -41,7 +37,12 @@ export const SpotifyWidget: React.FC = () => {
           <Typography variant="subtitle1">Recent Tracks:</Typography>
           <ul>
             {recentTracks.map((track: any, index: number) => (
-              <li key={index}>{track.track.name} by {track.track.artists.map((artist: any) => artist.name).join(", ")}</li>
+              <li key={index}>
+                {track.track.name} by{" "}
+                {track.track.artists
+                  .map((artist: any) => artist.name)
+                  .join(", ")}
+              </li>
             ))}
           </ul>
         </div>
