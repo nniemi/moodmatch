@@ -4,7 +4,7 @@ import { SpotifyWidget } from "../components/SpotifyWidget";
 import { Recommendations } from "../components/Recommendations";
 import { MoodChatbot } from "../components/MoodChatbot";
 import LandingPage from "../components/LandingPage";
-import { isAuthenticated, logout } from "../auth/spotifyAuth";
+import { checkAuthStatus, logout } from "../auth/spotifyAuth";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -14,15 +14,22 @@ export default function Home() {
   const [mood, setMood] = useState<string>("");
   const [authenticated, setAuthenticated] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    // Check authentication status on client side with a small delay
-    // to ensure cookies are properly set after redirect
-    const checkAuth = () => {
-      const authStatus = isAuthenticated();
-      console.log("Main page - Authentication status:", authStatus);
-      setAuthenticated(authStatus);
-      setLoading(false);
+    // Check authentication status using secure server-side API
+    const checkAuth = async () => {
+      try {
+        const authResult = await checkAuthStatus();
+        console.log("Main page - Authentication result:", authResult);
+        setAuthenticated(authResult.authenticated);
+        setUser(authResult.user);
+      } catch (error) {
+        console.error("Error checking authentication:", error);
+        setAuthenticated(false);
+      } finally {
+        setLoading(false);
+      }
     };
 
     // Add a small delay to ensure cookies are set after redirect
@@ -52,14 +59,16 @@ export default function Home() {
         mb={3}
       >
         <Typography variant="h4">🎧 MoodMatch Dashboard</Typography>
-        <Button
-          variant="outlined"
-          color="secondary"
-          onClick={logout}
-          sx={{ ml: 2 }}
-        >
-          Logout
-        </Button>
+        <Box display="flex" alignItems="center" gap={2}>
+          {user && (
+            <Typography variant="body2" color="text.secondary">
+              Welcome, {user.display_name}!
+            </Typography>
+          )}
+          <Button variant="outlined" color="secondary" onClick={logout}>
+            Logout
+          </Button>
+        </Box>
       </Box>
 
       <MoodChatbot setMood={setMood} />

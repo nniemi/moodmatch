@@ -69,7 +69,24 @@ export const debugSpotifyConfig = () => {
   console.log("==========================");
 };
 
-// Utility function to check if user is authenticated
+// Secure authentication check using server-side API
+export const checkAuthStatus = async (): Promise<{
+  authenticated: boolean;
+  user?: any;
+}> => {
+  try {
+    const response = await fetch("/api/auth-status");
+    const data = await response.json();
+
+    console.log("Server auth check result:", data);
+    return data;
+  } catch (error) {
+    console.error("Error checking auth status:", error);
+    return { authenticated: false };
+  }
+};
+
+// Utility function to check if user is authenticated (legacy - for backward compatibility)
 export const isAuthenticated = (): boolean => {
   if (typeof document === "undefined") return false; // Server-side check
 
@@ -90,7 +107,7 @@ export const isAuthenticated = (): boolean => {
   return hasToken;
 };
 
-// Utility function to get access token from cookies
+// Utility function to get access token from cookies (legacy - for backward compatibility)
 export const getAccessToken = (): string | null => {
   if (typeof document === "undefined") return null; // Server-side check
 
@@ -109,15 +126,14 @@ export const getAccessToken = (): string | null => {
   return null;
 };
 
-// Utility function to logout (clear the access token cookie)
-export const logout = (): void => {
-  if (typeof document === "undefined") return; // Server-side check
-
-  console.log("Logging out - clearing cookie");
-
-  // Clear the cookie by setting it to expire in the past
-  document.cookie =
-    "spotify_access_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; Domain=.vercel.app";
+// Secure logout using server-side API
+export const logout = async (): Promise<void> => {
+  try {
+    await fetch("/api/logout", { method: "POST" });
+    console.log("Logged out successfully");
+  } catch (error) {
+    console.error("Error during logout:", error);
+  }
 
   // Reload the page to show the landing page
   window.location.reload();

@@ -41,11 +41,11 @@ export default async function handler(
       }
     );
 
-    const { access_token, refresh_token, expires_in } = tokenResponse.data;
+    const { access_token, expires_in } = tokenResponse.data;
     console.log("Token received successfully");
     console.log("Token expires in:", expires_in, "seconds");
 
-    // Set the access token as an HTTP-only cookie with better options
+    // Set the access token as a secure HttpOnly cookie
     const isProduction = process.env.NODE_ENV === "production";
     const cookieOptions = [
       `spotify_access_token=${access_token}`,
@@ -53,10 +53,10 @@ export default async function handler(
       "HttpOnly",
       "SameSite=Lax",
       `Max-Age=${expires_in}`,
-      ...(isProduction ? ["Secure"] : []), // Only add Secure in production
+      ...(isProduction ? ["Secure"] : []),
     ].join("; ");
 
-    console.log("Setting cookie with options:", cookieOptions);
+    console.log("Setting secure HttpOnly cookie with options:", cookieOptions);
     res.setHeader("Set-Cookie", cookieOptions);
 
     console.log("Redirecting to main page...");
