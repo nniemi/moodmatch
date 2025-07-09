@@ -39,12 +39,11 @@ npm install
 - Go to the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
 - Create a new app
 - Add your callback URL to the app settings:
-  - For local development: `http://localhost:3000/api/callback`
   - For production: `https://your-vercel-app.vercel.app/api/callback`
 
 ### 4. Set Environment Variables
 
-Create a `.env.local` file for local development:
+Create a `.env` file for local development:
 
 ```env
 NEXT_PUBLIC_SPOTIFY_CLIENT_ID=your_spotify_client_id
@@ -65,6 +64,7 @@ npm run dev
 ```
 
 Visit [http://localhost:3000](http://localhost:3000)
+**NOTE: Spotify doesn't allow localhost as a Redirect URI, hence deployment is needed**
 
 ## 🏗️ Deployment
 
