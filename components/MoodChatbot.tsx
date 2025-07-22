@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 import { Paper, Typography, TextField, Button } from "@mui/material";
+import { SpotifyWidget } from "./SpotifyWidget";
 
-interface Props {
-  setMood: (mood: string) => void;
-}
-
-export const MoodChatbot: React.FC<Props> = ({ setMood }) => {
+export const MoodChatbot: React.FC = () => {
   const [input, setInput] = useState("");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
+  const [mood, setMood] = useState<string | null>(null); // Share mood with SpotifyWidget
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -20,7 +18,7 @@ export const MoodChatbot: React.FC<Props> = ({ setMood }) => {
         body: JSON.stringify({ message: input }),
       });
       const data = await res.json();
-      setMood(data.mood);
+      setMood(data.mood); // Set the detected mood
       setResponse(`Detected mood: ${data.mood}`);
     } catch (err) {
       setResponse("Failed to detect mood. Please try again.");
@@ -30,27 +28,31 @@ export const MoodChatbot: React.FC<Props> = ({ setMood }) => {
   };
 
   return (
-    <Paper elevation={3} sx={{ p: 2, mb: 3 }}>
-      <Typography variant="subtitle1" gutterBottom>
-        Describe your current mood or situation:
-      </Typography>
-      {/* <TextField
-        fullWidth
-        label="Type something..."
-        variant="outlined"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        sx={{ mb: 2 }}
-        disabled={loading}
-      />
-      <Button variant="contained" onClick={handleSubmit} disabled={loading}>
-        {loading ? "Analyzing..." : "Analyze Mood"}
-      </Button> */}
-      {response && (
-        <Typography sx={{ mt: 2 }} color="primary">
-          {response}
+    <>
+      <Paper elevation={3} sx={{ p: 2, mb: 3 }}>
+        <Typography variant="subtitle1" gutterBottom>
+          Describe your current mood or situation:
         </Typography>
-      )}
-    </Paper>
+        <TextField
+          fullWidth
+          label="Type something..."
+          variant="outlined"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          sx={{ mb: 2 }}
+          disabled={loading}
+        />
+        <Button variant="contained" onClick={handleSubmit} disabled={loading}>
+          {loading ? "Analyzing..." : "Analyze Mood"}
+        </Button>
+        {response && (
+          <Typography sx={{ mt: 2 }} color="primary">
+            {response}
+          </Typography>
+        )}
+      </Paper>
+      {/* Pass the mood to SpotifyWidget */}
+      {mood && <SpotifyWidget mood={mood} />}
+    </>
   );
 };

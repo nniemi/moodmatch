@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Paper, Typography, Button } from "@mui/material";
-import { fetchSpotifyRecentTracks } from "../features/spotifySlice";
 import { getSpotifyAuthUrl } from "../auth/spotifyAuth";
-import { AppDispatch } from "../app/store";
 
-export const SpotifyWidget: React.FC = () => {
-  const { recentTracks } = useSelector((state: any) => state.spotify);
-  const dispatch = useDispatch<AppDispatch>();
+interface Props {
+  mood: string;
+}
+
+export const SpotifyWidget: React.FC<Props> = ({ mood }) => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [playlists, setPlaylists] = useState<any[]>([]);
 
   useEffect(() => {
     // Get access token from secure API endpoint
@@ -33,10 +33,31 @@ export const SpotifyWidget: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (accessToken) {
-      dispatch(fetchSpotifyRecentTracks(accessToken));
-    }
-  }, [dispatch, accessToken]);
+    // Search for playlists based on the mood
+    const searchPlaylists = async () => {
+      if (!accessToken) return;
+
+      try {
+        const response = await fetch(
+          `https://api.spotify.com/v1/search?q=${encodeURIComponent(
+            mood
+          )}&type=playlist&limit=5`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+        setPlaylists(data.playlists.items || []);
+      } catch (error) {
+        console.error("Error searching playlists:", error);
+      }
+    };
+
+    searchPlaylists();
+  }, [accessToken, mood]);
 
   const handleLogin = () => {
     window.location.href = getSpotifyAuthUrl();
@@ -60,14 +81,20 @@ export const SpotifyWidget: React.FC = () => {
         </Button>
       ) : (
         <div>
-          <Typography variant="subtitle1">Recent Tracks:</Typography>
+          <Typography variant="subtitle1">
+            Playlists for mood: {mood}
+          </Typography>
           <ul>
-            {recentTracks.map((track: any, index: number) => (
-              <li key={index}>
-                {track.track.name} by{" "}
-                {track.track.artists
-                  .map((artist: any) => artist.name)
-                  .join(", ")}
+            {playlists.map((playlist: any) => (
+              <li key={playlist.id}>
+                <a
+                  href={playlist.external_urls.spotify}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {playlist.name}
+                </a>{" "}
+                by {playlist.owner.display_name}
               </li>
             ))}
           </ul>

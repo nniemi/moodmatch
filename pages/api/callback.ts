@@ -15,14 +15,9 @@ export default async function handler(
     return res.status(400).json({ error: "No authorization code provided" });
   }
 
-  // Debug: Log the values being sent to Spotify
   const redirectUri = process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI;
   const clientId = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
   const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
-
-  console.log("Debug - Redirect URI being sent:", redirectUri);
-  console.log("Debug - Client ID being sent:", clientId);
-  console.log("Debug - Client Secret set:", clientSecret ? "Yes" : "No");
 
   try {
     const tokenResponse = await axios.post(

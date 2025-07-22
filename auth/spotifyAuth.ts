@@ -19,18 +19,6 @@ export const getSpotifyAuthUrl = () => {
     );
   }
 
-  // Debug logging - remove this after fixing the issue
-  console.log("Debug - Raw Redirect URI from env:", redirectUri);
-  console.log("Debug - Redirect URI length:", redirectUri.length);
-  console.log("Debug - Redirect URI first character:", redirectUri.charAt(0));
-  console.log("Debug - Client ID:", clientId);
-
-  // Temporary fix: if redirect URI starts with @, use the correct one
-  if (redirectUri.startsWith("@")) {
-    console.warn("Debug - Redirect URI starts with @, using fallback");
-    redirectUri = "https://moodmatch-liard.vercel.app/api/callback";
-  }
-
   // Validate redirect URI format
   if (
     !redirectUri.startsWith("http://") &&
@@ -45,29 +33,10 @@ export const getSpotifyAuthUrl = () => {
     redirectUri
   )}&scope=${encodeURIComponent(scopes.join(" "))}`;
 
-  // Debug logging - remove this after fixing the issue
-  console.log("Debug - Full Auth URL:", authUrl);
 
   return authUrl;
 };
 
-// Debug function to check your environment variables
-export const debugSpotifyConfig = () => {
-  console.log("=== Spotify Config Debug ===");
-  console.log(
-    "Client ID:",
-    process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID ? "✅ Set" : "❌ Missing"
-  );
-  console.log(
-    "Redirect URI:",
-    process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI || "❌ Missing"
-  );
-  console.log(
-    "Client Secret:",
-    process.env.SPOTIFY_CLIENT_SECRET ? "✅ Set" : "❌ Missing"
-  );
-  console.log("==========================");
-};
 
 // Secure authentication check using server-side API
 export const checkAuthStatus = async (): Promise<{
@@ -86,7 +55,7 @@ export const checkAuthStatus = async (): Promise<{
   }
 };
 
-// Utility function to check if user is authenticated (legacy - for backward compatibility)
+// Utility function to check if user is authenticated
 export const isAuthenticated = (): boolean => {
   if (typeof document === "undefined") return false; // Server-side check
 
