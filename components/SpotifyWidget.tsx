@@ -14,8 +14,8 @@ import {
 } from "@mui/material";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import AlbumIcon from "@mui/icons-material/Album";
-import { getThemeForMood } from "@/pages/themeUtils";
 import { ThemeProvider, CssBaseline } from "@mui/material";
+import { getThemeForMood } from "@/utils/themeUtils";
 
 interface Props {
   mood: string;
