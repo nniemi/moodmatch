@@ -33,10 +33,8 @@ export const getSpotifyAuthUrl = () => {
     redirectUri
   )}&scope=${encodeURIComponent(scopes.join(" "))}`;
 
-
   return authUrl;
 };
-
 
 // Secure authentication check using server-side API
 export const checkAuthStatus = async (): Promise<{
