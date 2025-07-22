@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Paper, Typography, Button } from "@mui/material";
 import { getSpotifyAuthUrl } from "../auth/spotifyAuth";
+import { Paper, Typography, Button, List, ListItem, ListItemText, ListItemAvatar, Avatar, Link } from "@mui/material";
+import MusicNoteIcon from "@mui/icons-material/MusicNote";
 
 interface Props {
   mood: string;
@@ -33,26 +34,28 @@ export const SpotifyWidget: React.FC<Props> = ({ mood }) => {
   }, []);
 
   useEffect(() => {
-    // Search for playlists based on the mood
     const searchPlaylists = async () => {
-      if (!accessToken) return;
+      if (!accessToken || !mood) return;
 
       try {
+        setLoading(true);
         const response = await fetch(
-          `https://api.spotify.com/v1/search?q=${encodeURIComponent(
-            mood
-          )}&type=playlist&limit=5`,
+          `https://api.spotify.com/v1/search?type=playlist&q=${mood}&limit=5`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
           }
         );
-
         const data = await response.json();
-        setPlaylists(data.playlists.items || []);
+        const filteredPlaylists = data.playlists.items.filter(
+          (playlist: any) => playlist !== null
+        );
+        setPlaylists(filteredPlaylists);
       } catch (error) {
-        console.error("Error searching playlists:", error);
+        console.error("Error fetching playlists:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -80,25 +83,36 @@ export const SpotifyWidget: React.FC<Props> = ({ mood }) => {
           Login with Spotify
         </Button>
       ) : (
-        <div>
-          <Typography variant="subtitle1">
-            Playlists for mood: {mood}
-          </Typography>
-          <ul>
-            {playlists.map((playlist: any) => (
-              <li key={playlist.id}>
-                <a
-                  href={playlist.external_urls.spotify}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {playlist.name}
-                </a>{" "}
-                by {playlist.owner.display_name}
-              </li>
-            ))}
-          </ul>
-        </div>
+<div>
+  <Typography variant="h6" gutterBottom>
+    Playlists for mood: {mood}
+  </Typography>
+  <List>
+    {playlists.map((playlist: any) => (
+      <ListItem key={playlist.id} alignItems="flex-start">
+        <ListItemAvatar>
+          <Avatar>
+            <MusicNoteIcon />
+          </Avatar>
+        </ListItemAvatar>
+        <ListItemText
+          primary={
+            <Link
+              href={playlist.external_urls.spotify}
+              target="_blank"
+              rel="noopener noreferrer"
+              underline="hover"
+              color="primary"
+            >
+              {playlist.name}
+            </Link>
+          }
+          secondary={`by ${playlist.owner.display_name}`}
+        />
+      </ListItem>
+    ))}
+  </List>
+</div>
       )}
     </Paper>
   );
