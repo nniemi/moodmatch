@@ -1,6 +1,5 @@
 // moodmatch-dashboard/frontend/pages/index.tsx
 import { useState, useEffect } from "react";
-import { SpotifyWidget } from "../components/SpotifyWidget";
 import { Recommendations } from "../components/Recommendations";
 import { MoodChatbot } from "../components/MoodChatbot";
 import LandingPage from "../components/LandingPage";
@@ -11,7 +10,6 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 
 export default function Home() {
-  const [mood, setMood] = useState<string>("");
   const [authenticated, setAuthenticated] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<any>(null);
@@ -71,20 +69,13 @@ export default function Home() {
         </Box>
       </Box>
 
-      <MoodChatbot setMood={setMood} />
-
-      <div style={{ marginTop: "2rem" }}>
-        <Typography variant="h6" gutterBottom>
-          Your Recent Spotify Tracks
-        </Typography>
-        <SpotifyWidget />
-      </div>
+      {/* Pass setMood to MoodChatbot */}
+      <MoodChatbot />
 
       <div style={{ marginTop: "2rem" }}>
         <Typography variant="h6" gutterBottom>
           Music Suggestions Based on Mood
         </Typography>
-        <Recommendations mood={mood} />
       </div>
     </Container>
   );
