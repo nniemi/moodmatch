@@ -25,7 +25,7 @@ export const fetchMoodColors = async (
     const completion = await openai.completions.create({
       model: "gpt-3.5-turbo-instruct", // Use the same model as in mood.ts
       prompt,
-      max_tokens: 50,
+      max_tokens: 5,
       temperature: 0.7,
     });
 
