@@ -22,6 +22,7 @@ import {
   AutoAwesome
 } from "@mui/icons-material";
 import { SpotifyWidget } from "./SpotifyWidget";
+import { useTheme } from "../utils/ThemeContext";
 
 const moodSuggestions = [
   "I'm feeling happy and energetic today",
@@ -40,6 +41,7 @@ export const MoodChatbot: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [mood, setMood] = useState<string | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const { setCurrentMood } = useTheme();
 
   const handleSubmit = async () => {
     if (!input.trim()) return;
@@ -53,8 +55,10 @@ export const MoodChatbot: React.FC = () => {
         body: JSON.stringify({ message: input }),
       });
       const data = await res.json();
-      setMood(data.mood);
-      setResponse(`Detected mood: ${data.mood}`);
+      const detectedMood = data.mood;
+      setMood(detectedMood);
+      setCurrentMood(detectedMood); // Update global theme
+      setResponse(`Detected mood: ${detectedMood}`);
     } catch (err) {
       setResponse("Failed to detect mood. Please try again.");
     } finally {

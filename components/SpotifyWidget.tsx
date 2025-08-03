@@ -29,8 +29,7 @@ import AlbumIcon from "@mui/icons-material/Album";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
-import { ThemeProvider, CssBaseline } from "@mui/material";
-import { getThemeForMood } from "@/utils/themeUtils";
+
 
 interface Props {
   mood: string;
@@ -41,8 +40,6 @@ export const SpotifyWidget: React.FC<Props> = ({ mood }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [playlists, setPlaylists] = useState<any[]>([]);
   const [songs, setSongs] = useState<any[]>([]);
-  const [theme, setTheme] = useState<any>(null);
-  const [themeLoading, setThemeLoading] = useState<boolean>(true);
 
   useEffect(() => {
     // Get access token from secure API endpoint
@@ -65,16 +62,7 @@ export const SpotifyWidget: React.FC<Props> = ({ mood }) => {
     getToken();
   }, []);
 
-  useEffect(() => {
-    const updateTheme = async () => {
-      setThemeLoading(true);
-      const newTheme = await getThemeForMood(mood);
-      setTheme(newTheme);
-      setThemeLoading(false);
-    };
 
-    updateTheme();
-  }, [mood]);
 
   useEffect(() => {
     const searchPlaylists = async () => {
@@ -143,24 +131,7 @@ export const SpotifyWidget: React.FC<Props> = ({ mood }) => {
     navigator.share?.({ url }) || navigator.clipboard.writeText(url);
   };
 
-  if (themeLoading) {
-    return (
-      <Card elevation={4} sx={{ borderRadius: 3, overflow: 'hidden' }}>
-        <Box sx={{ p: 3, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-          <Box display="flex" alignItems="center" mb={2}>
-            <Skeleton variant="circular" width={40} height={40} sx={{ mr: 2 }} />
-            <Skeleton variant="text" width={200} height={32} />
-          </Box>
-          <Skeleton variant="text" width="60%" height={24} />
-        </Box>
-        <CardContent sx={{ p: 3 }}>
-          <Skeleton variant="rectangular" height={200} sx={{ borderRadius: 2, mb: 2 }} />
-          <Skeleton variant="text" width="80%" />
-          <Skeleton variant="text" width="60%" />
-        </CardContent>
-      </Card>
-    );
-  }
+
 
   if (loading) {
     return (
@@ -186,9 +157,7 @@ export const SpotifyWidget: React.FC<Props> = ({ mood }) => {
   }
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Fade in={true} timeout={800}>
+    <Fade in={true} timeout={800}>
         <Card elevation={8} sx={{ 
           borderRadius: 3, 
           overflow: 'hidden',
@@ -393,6 +362,5 @@ export const SpotifyWidget: React.FC<Props> = ({ mood }) => {
           </CardContent>
         </Card>
       </Fade>
-    </ThemeProvider>
   );
 };

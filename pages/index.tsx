@@ -26,11 +26,13 @@ import {
   Person,
   Dashboard
 } from "@mui/icons-material";
+import { useTheme } from "../utils/ThemeContext";
 
 export default function Home() {
   const [authenticated, setAuthenticated] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<any>(null);
+  const { currentMood, isLoading: themeLoading } = useTheme();
 
   useEffect(() => {
     // Check authentication status using secure server-side API
@@ -76,14 +78,23 @@ export default function Home() {
   }
 
   return (
-    <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)' }}>
+    <Box sx={{ 
+      minHeight: '100vh', 
+      background: currentMood 
+        ? 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)'
+        : 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+      transition: 'background 0.5s ease'
+    }}>
       {/* Enhanced App Bar */}
       <AppBar 
         position="static" 
         elevation={0}
         sx={{ 
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          backdropFilter: 'blur(10px)'
+          background: currentMood 
+            ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+            : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          backdropFilter: 'blur(10px)',
+          transition: 'background 0.5s ease'
         }}
       >
         <Toolbar>
@@ -92,6 +103,17 @@ export default function Home() {
             <Typography variant="h6" fontWeight="bold">
               MoodMatch Dashboard
             </Typography>
+            {currentMood && (
+              <Chip 
+                label={currentMood} 
+                size="small" 
+                sx={{ 
+                  ml: 2,
+                  backgroundColor: 'rgba(255,255,255,0.2)', 
+                  color: 'white' 
+                }} 
+              />
+            )}
           </Box>
           
           <Box display="flex" alignItems="center" gap={2}>
