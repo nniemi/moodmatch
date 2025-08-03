@@ -45,7 +45,6 @@ export const checkAuthStatus = async (): Promise<{
     const response = await fetch("/api/auth-status");
     const data = await response.json();
 
-    console.log("Server auth check result:", data);
     return data;
   } catch (error) {
     console.error("Error checking auth status:", error);

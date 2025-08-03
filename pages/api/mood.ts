@@ -25,8 +25,6 @@ export default async function handler(
 
     const mood = completion.choices[0].text?.trim() || "Relaxed";
 
-    console.log("OpenAI response:", completion.choices[0].text);
-    console.log(`Detected mood: ${mood}`);
     res.status(200).json({ mood });
   } catch (error) {
     console.error(error);

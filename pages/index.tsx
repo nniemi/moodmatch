@@ -37,7 +37,6 @@ export default function Home() {
     const checkAuth = async () => {
       try {
         const authResult = await checkAuthStatus();
-        console.log("Main page - Authentication result:", authResult);
         setAuthenticated(authResult.authenticated);
         setUser(authResult.user);
       } catch (error) {
