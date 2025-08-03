@@ -8,6 +8,24 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
+import { 
+  Fade, 
+  Slide, 
+  AppBar, 
+  Toolbar, 
+  Avatar, 
+  Chip,
+  Card,
+  CardContent,
+  IconButton,
+  Tooltip
+} from "@mui/material";
+import {
+  MusicNote,
+  Logout,
+  Person,
+  Dashboard
+} from "@mui/icons-material";
 
 export default function Home() {
   const [authenticated, setAuthenticated] = useState<boolean>(false);
@@ -38,8 +56,17 @@ export default function Home() {
 
   if (loading) {
     return (
-      <Container maxWidth="md" sx={{ py: 4, textAlign: "center" }}>
-        <Typography>Loading...</Typography>
+      <Container maxWidth="md" sx={{ py: 8, textAlign: "center" }}>
+        <Fade in={true} timeout={800}>
+          <Box>
+            <Typography variant="h4" mb={2}>
+              Loading your personalized experience...
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Setting up your mood music dashboard
+            </Typography>
+          </Box>
+        </Fade>
       </Container>
     );
   }
@@ -49,34 +76,138 @@ export default function Home() {
   }
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={3}
+    <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)' }}>
+      {/* Enhanced App Bar */}
+      <AppBar 
+        position="static" 
+        elevation={0}
+        sx={{ 
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          backdropFilter: 'blur(10px)'
+        }}
       >
-        <Typography variant="h4">🎧 MoodMatch Dashboard</Typography>
-        <Box display="flex" alignItems="center" gap={2}>
-          {user && (
-            <Typography variant="body2" color="text.secondary">
-              Welcome, {user.display_name}!
+        <Toolbar>
+          <Box display="flex" alignItems="center" flex={1}>
+            <MusicNote sx={{ mr: 2, fontSize: 32 }} />
+            <Typography variant="h6" fontWeight="bold">
+              MoodMatch Dashboard
             </Typography>
-          )}
-          <Button variant="outlined" color="secondary" onClick={logout}>
-            Logout
-          </Button>
-        </Box>
-      </Box>
+          </Box>
+          
+          <Box display="flex" alignItems="center" gap={2}>
+            {user && (
+              <Box display="flex" alignItems="center" gap={1}>
+                <Avatar 
+                  src={user.images?.[0]?.url} 
+                  sx={{ width: 32, height: 32 }}
+                >
+                  <Person />
+                </Avatar>
+                <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.9)' }}>
+                  {user.display_name}
+                </Typography>
+              </Box>
+            )}
+            <Chip 
+              label="Connected" 
+              size="small" 
+              color="success" 
+              sx={{ backgroundColor: 'rgba(255,255,255,0.2)', color: 'white' }}
+            />
+            <Tooltip title="Logout">
+              <IconButton 
+                onClick={logout}
+                sx={{ color: 'white' }}
+              >
+                <Logout />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </Toolbar>
+      </AppBar>
 
-      {/* Pass setMood to MoodChatbot */}
-      <MoodChatbot />
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Fade in={true} timeout={1000}>
+          <Box mb={4}>
+            <Box display="flex" alignItems="center" mb={3}>
+              <Dashboard sx={{ mr: 2, fontSize: 32, color: 'primary.main' }} />
+              <Typography variant="h4" fontWeight="bold">
+                Welcome back!
+              </Typography>
+            </Box>
+            <Typography variant="body1" color="text.secondary">
+              Tell us how you're feeling and discover the perfect music for your mood
+            </Typography>
+          </Box>
+        </Fade>
 
-      <div style={{ marginTop: "2rem" }}>
-        <Typography variant="h6" gutterBottom>
-          Music Suggestions Based on Mood
-        </Typography>
-      </div>
-    </Container>
+        {/* Enhanced Mood Chatbot */}
+        <Slide direction="up" in={true} timeout={1200}>
+          <Box>
+            <MoodChatbot />
+          </Box>
+        </Slide>
+
+        {/* Additional Features Section */}
+        <Slide direction="up" in={true} timeout={1400}>
+          <Box mt={6}>
+            <Typography variant="h5" fontWeight="bold" mb={3}>
+              Discover More
+            </Typography>
+            <Box sx={{ 
+              display: 'grid', 
+              gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
+              gap: 3 
+            }}>
+              <Card 
+                elevation={4} 
+                sx={{ 
+                  p: 3, 
+                  borderRadius: 3,
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-4px)',
+                    boxShadow: 8,
+                  }
+                }}
+              >
+                <CardContent>
+                  <Typography variant="h6" fontWeight="bold" mb={2}>
+                    🎵 Music Recommendations
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" mb={2}>
+                    Get personalized music suggestions based on your current mood and listening history.
+                  </Typography>
+                  <Chip label="Coming Soon" color="primary" size="small" />
+                </CardContent>
+              </Card>
+
+              <Card 
+                elevation={4} 
+                sx={{ 
+                  p: 3, 
+                  borderRadius: 3,
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-4px)',
+                    boxShadow: 8,
+                  }
+                }}
+              >
+                <CardContent>
+                  <Typography variant="h6" fontWeight="bold" mb={2}>
+                    📊 Mood Analytics
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" mb={2}>
+                    Track your mood patterns and discover your music listening habits over time.
+                  </Typography>
+                  <Chip label="Coming Soon" color="secondary" size="small" />
+                </CardContent>
+              </Card>
+            </Box>
+          </Box>
+        </Slide>
+      </Container>
+    </Box>
   );
 }
