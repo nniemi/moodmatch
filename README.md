@@ -4,7 +4,7 @@ A modern Next.js application that analyzes your mood through AI and provides per
 
 ## 🎵 Demo
 
-![Demonstration of functionality.](https://imgur.com/a/hXDARyF)
+![Demo](./demo.gif)
 
 
 ## 🚀 Features
