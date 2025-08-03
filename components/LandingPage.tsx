@@ -8,7 +8,6 @@ import {
   Fade,
   Slide,
   Card,
-  CardContent,
   Chip
 } from "@mui/material";
 import { 

@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import {
-  Paper,
   Typography,
   TextField,
-  Button,
   Chip,
   Box,
   Fade,
@@ -12,12 +10,10 @@ import {
   IconButton,
   Tooltip,
   Card,
-  CardContent,
-  Grid
+  CardContent
 } from "@mui/material";
 import {
   SentimentSatisfiedAlt,
-  MusicNote,
   Psychology,
   AutoAwesome
 } from "@mui/icons-material";
@@ -41,7 +37,7 @@ export const MoodChatbot: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [mood, setMood] = useState<string | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const { setCurrentMood } = useTheme();
+  const { setCurrentMood, theme } = useTheme();
 
   const handleSubmit = async () => {
     if (!input.trim()) return;
@@ -81,10 +77,13 @@ export const MoodChatbot: React.FC = () => {
     <Box sx={{ mb: 4 }}>
       <Fade in={true} timeout={800}>
         <Card elevation={8} sx={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          background: mood
+            ? `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`
+            : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
           color: 'white',
           mb: 3,
-          borderRadius: 3
+          borderRadius: 3,
+          transition: 'background 0.5s ease'
         }}>
           <CardContent sx={{ p: 4 }}>
             <Box display="flex" alignItems="center" mb={2}>
@@ -193,7 +192,7 @@ export const MoodChatbot: React.FC = () => {
         </Card>
       </Fade>
 
-      {/* Spotify Widget with animation */}
+      {/* Spotify Widget */}
       {mood && (
         <Slide direction="up" in={!!mood} timeout={600}>
           <Box>

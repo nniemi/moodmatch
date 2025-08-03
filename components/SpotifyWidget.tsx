@@ -1,35 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { getSpotifyAuthUrl } from "../auth/spotifyAuth";
 import {
-  Paper,
   Typography,
   Button,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemAvatar,
   Avatar,
-  Link,
-  Divider,
   Box,
   Card,
   CardContent,
   Skeleton,
   Fade,
-  Slide,
   Chip,
   IconButton,
   Tooltip,
-  Grid,
   LinearProgress,
   Badge
 } from "@mui/material";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import AlbumIcon from "@mui/icons-material/Album";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
-
+import { useTheme } from "../utils/ThemeContext";
 
 interface Props {
   mood: string;
@@ -40,6 +30,7 @@ export const SpotifyWidget: React.FC<Props> = ({ mood }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [playlists, setPlaylists] = useState<any[]>([]);
   const [songs, setSongs] = useState<any[]>([]);
+  const { theme } = useTheme();
 
   useEffect(() => {
     // Get access token from secure API endpoint
@@ -61,8 +52,6 @@ export const SpotifyWidget: React.FC<Props> = ({ mood }) => {
 
     getToken();
   }, []);
-
-
 
   useEffect(() => {
     const searchPlaylists = async () => {
@@ -131,12 +120,13 @@ export const SpotifyWidget: React.FC<Props> = ({ mood }) => {
     navigator.share?.({ url }) || navigator.clipboard.writeText(url);
   };
 
-
-
   if (loading) {
     return (
       <Card elevation={4} sx={{ borderRadius: 3, overflow: 'hidden' }}>
-        <Box sx={{ p: 3, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+        <Box sx={{ 
+          p: 3, 
+          background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`
+        }}>
           <Typography variant="h6" color="white" fontWeight="bold">
             🎵 Spotify Recommendations
           </Typography>
@@ -158,209 +148,210 @@ export const SpotifyWidget: React.FC<Props> = ({ mood }) => {
 
   return (
     <Fade in={true} timeout={800}>
-        <Card elevation={8} sx={{ 
-          borderRadius: 3, 
-          overflow: 'hidden',
-          background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255,255,255,0.2)'
+      <Card elevation={8} sx={{ 
+        borderRadius: 3, 
+        overflow: 'hidden',
+        background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
+        backdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255,255,255,0.2)'
+      }}>
+        <Box sx={{ 
+          p: 3, 
+          background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+          color: 'white',
+          transition: 'background 0.5s ease'
         }}>
-          <Box sx={{ 
-            p: 3, 
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            color: 'white'
-          }}>
-            <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
-              <Box display="flex" alignItems="center">
-                <MusicNoteIcon sx={{ mr: 2, fontSize: 32 }} />
-                <Box>
-                  <Typography variant="h5" fontWeight="bold">
-                    🎵 Music for your mood
-                  </Typography>
-                  <Chip 
-                    label={mood} 
-                    size="small" 
-                    sx={{ 
-                      backgroundColor: 'rgba(255,255,255,0.2)', 
-                      color: 'white',
-                      mt: 1
-                    }} 
-                  />
+          <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+            <Box display="flex" alignItems="center">
+              <MusicNoteIcon sx={{ mr: 2, fontSize: 32 }} />
+              <Box>
+                <Typography variant="h5" fontWeight="bold">
+                  🎵 Music for your mood
+                </Typography>
+                <Chip 
+                  label={mood} 
+                  size="small" 
+                  sx={{ 
+                    backgroundColor: 'rgba(255,255,255,0.2)', 
+                    color: 'white',
+                    mt: 1
+                  }} 
+                />
+              </Box>
+            </Box>
+            {!accessToken && (
+              <Button 
+                variant="contained" 
+                onClick={handleLogin}
+                sx={{ 
+                  backgroundColor: '#1DB954',
+                  '&:hover': { backgroundColor: '#1ed760' }
+                }}
+              >
+                Connect Spotify
+              </Button>
+            )}
+          </Box>
+        </Box>
+
+        <CardContent sx={{ p: 3 }}>
+          {!accessToken ? (
+            <Box textAlign="center" py={4}>
+              <Typography variant="h6" color="text.secondary" mb={2}>
+                Connect your Spotify account to get personalized recommendations
+              </Typography>
+              <Button 
+                variant="outlined" 
+                onClick={handleLogin}
+                startIcon={<MusicNoteIcon />}
+              >
+                Login with Spotify
+              </Button>
+            </Box>
+          ) : (
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
+              {/* Playlists Section */}
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="h6" gutterBottom fontWeight="bold" color="primary">
+                  📚 Playlists for {mood}
+                </Typography>
+                <Box sx={{ maxHeight: 400, overflowY: 'auto' }}>
+                  {playlists.length > 0 ? (
+                    playlists.map((playlist: any) => (
+                      <Fade key={playlist.id} in={true} timeout={300}>
+                        <Card 
+                          elevation={2} 
+                          sx={{ 
+                            mb: 2, 
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease',
+                            '&:hover': {
+                              transform: 'translateY(-2px)',
+                              boxShadow: 4,
+                            }
+                          }}
+                          onClick={() => handlePlayClick(playlist.external_urls.spotify)}
+                        >
+                          <CardContent sx={{ p: 2 }}>
+                            <Box display="flex" alignItems="center" justifyContent="space-between">
+                              <Box display="flex" alignItems="center" flex={1}>
+                                <Avatar sx={{ mr: 2, bgcolor: 'primary.main' }}>
+                                  <MusicNoteIcon />
+                                </Avatar>
+                                <Box flex={1}>
+                                  <Typography variant="subtitle1" fontWeight="medium" noWrap>
+                                    {playlist.name}
+                                  </Typography>
+                                  <Typography variant="body2" color="text.secondary">
+                                    by {playlist.owner.display_name}
+                                  </Typography>
+                                </Box>
+                              </Box>
+                              <Box display="flex" gap={1}>
+                                <Tooltip title="Play">
+                                  <IconButton size="small" color="primary">
+                                    <PlayArrowIcon />
+                                  </IconButton>
+                                </Tooltip>
+                                <Tooltip title="Share">
+                                  <IconButton 
+                                    size="small" 
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleShareClick(playlist.external_urls.spotify);
+                                    }}
+                                  >
+                                    <ShareIcon />
+                                  </IconButton>
+                                </Tooltip>
+                              </Box>
+                            </Box>
+                          </CardContent>
+                        </Card>
+                      </Fade>
+                    ))
+                  ) : (
+                    <Typography color="text.secondary" textAlign="center" py={2}>
+                      No playlists found for this mood
+                    </Typography>
+                  )}
                 </Box>
               </Box>
-              {!accessToken && (
-                <Button 
-                  variant="contained" 
-                  onClick={handleLogin}
-                  sx={{ 
-                    backgroundColor: '#1DB954',
-                    '&:hover': { backgroundColor: '#1ed760' }
-                  }}
-                >
-                  Connect Spotify
-                </Button>
-              )}
-            </Box>
-          </Box>
 
-          <CardContent sx={{ p: 3 }}>
-            {!accessToken ? (
-              <Box textAlign="center" py={4}>
-                <Typography variant="h6" color="text.secondary" mb={2}>
-                  Connect your Spotify account to get personalized recommendations
+              {/* Songs Section */}
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="h6" gutterBottom fontWeight="bold" color="primary">
+                  🎵 Songs for {mood}
                 </Typography>
-                <Button 
-                  variant="outlined" 
-                  onClick={handleLogin}
-                  startIcon={<MusicNoteIcon />}
-                >
-                  Login with Spotify
-                </Button>
+                <Box sx={{ maxHeight: 400, overflowY: 'auto' }}>
+                  {songs.length > 0 ? (
+                    songs.map((song: any) => (
+                      <Fade key={song.id} in={true} timeout={300}>
+                        <Card 
+                          elevation={2} 
+                          sx={{ 
+                            mb: 2, 
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease',
+                            '&:hover': {
+                              transform: 'translateY(-2px)',
+                              boxShadow: 4,
+                            }
+                          }}
+                          onClick={() => handlePlayClick(song.external_urls.spotify)}
+                        >
+                          <CardContent sx={{ p: 2 }}>
+                            <Box display="flex" alignItems="center" justifyContent="space-between">
+                              <Box display="flex" alignItems="center" flex={1}>
+                                <Avatar 
+                                  src={song.album.images[0]?.url} 
+                                  sx={{ mr: 2 }}
+                                >
+                                  <AlbumIcon />
+                                </Avatar>
+                                <Box flex={1}>
+                                  <Typography variant="subtitle1" fontWeight="medium" noWrap>
+                                    {song.name}
+                                  </Typography>
+                                  <Typography variant="body2" color="text.secondary">
+                                    {song.artists.map((artist: any) => artist.name).join(", ")}
+                                  </Typography>
+                                </Box>
+                              </Box>
+                              <Box display="flex" gap={1}>
+                                <Tooltip title="Play">
+                                  <IconButton size="small" color="primary">
+                                    <PlayArrowIcon />
+                                  </IconButton>
+                                </Tooltip>
+                                <Tooltip title="Share">
+                                  <IconButton 
+                                    size="small" 
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleShareClick(song.external_urls.spotify);
+                                    }}
+                                  >
+                                    <ShareIcon />
+                                  </IconButton>
+                                </Tooltip>
+                              </Box>
+                            </Box>
+                          </CardContent>
+                        </Card>
+                      </Fade>
+                    ))
+                  ) : (
+                    <Typography color="text.secondary" textAlign="center" py={2}>
+                      No songs found for this mood
+                    </Typography>
+                  )}
+                </Box>
               </Box>
-            ) : (
-                                            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
-                 {/* Playlists Section */}
-                 <Box sx={{ flex: 1 }}>
-                   <Typography variant="h6" gutterBottom fontWeight="bold" color="primary">
-                     📚 Playlists for {mood}
-                   </Typography>
-                   <Box sx={{ maxHeight: 400, overflowY: 'auto' }}>
-                     {playlists.length > 0 ? (
-                       playlists.map((playlist: any) => (
-                         <Fade key={playlist.id} in={true} timeout={300}>
-                           <Card 
-                             elevation={2} 
-                             sx={{ 
-                               mb: 2, 
-                               cursor: 'pointer',
-                               transition: 'all 0.3s ease',
-                               '&:hover': {
-                                 transform: 'translateY(-2px)',
-                                 boxShadow: 4,
-                               }
-                             }}
-                             onClick={() => handlePlayClick(playlist.external_urls.spotify)}
-                           >
-                             <CardContent sx={{ p: 2 }}>
-                               <Box display="flex" alignItems="center" justifyContent="space-between">
-                                 <Box display="flex" alignItems="center" flex={1}>
-                                   <Avatar sx={{ mr: 2, bgcolor: 'primary.main' }}>
-                                     <MusicNoteIcon />
-                                   </Avatar>
-                                   <Box flex={1}>
-                                     <Typography variant="subtitle1" fontWeight="medium" noWrap>
-                                       {playlist.name}
-                                     </Typography>
-                                     <Typography variant="body2" color="text.secondary">
-                                       by {playlist.owner.display_name}
-                                     </Typography>
-                                   </Box>
-                                 </Box>
-                                 <Box display="flex" gap={1}>
-                                   <Tooltip title="Play">
-                                     <IconButton size="small" color="primary">
-                                       <PlayArrowIcon />
-                                     </IconButton>
-                                   </Tooltip>
-                                   <Tooltip title="Share">
-                                     <IconButton 
-                                       size="small" 
-                                       onClick={(e) => {
-                                         e.stopPropagation();
-                                         handleShareClick(playlist.external_urls.spotify);
-                                       }}
-                                     >
-                                       <ShareIcon />
-                                     </IconButton>
-                                   </Tooltip>
-                                 </Box>
-                               </Box>
-                             </CardContent>
-                           </Card>
-                         </Fade>
-                       ))
-                     ) : (
-                       <Typography color="text.secondary" textAlign="center" py={2}>
-                         No playlists found for this mood
-                       </Typography>
-                     )}
-                   </Box>
-                 </Box>
-
-                 {/* Songs Section */}
-                 <Box sx={{ flex: 1 }}>
-                   <Typography variant="h6" gutterBottom fontWeight="bold" color="primary">
-                     🎵 Songs for {mood}
-                   </Typography>
-                   <Box sx={{ maxHeight: 400, overflowY: 'auto' }}>
-                     {songs.length > 0 ? (
-                       songs.map((song: any) => (
-                         <Fade key={song.id} in={true} timeout={300}>
-                           <Card 
-                             elevation={2} 
-                             sx={{ 
-                               mb: 2, 
-                               cursor: 'pointer',
-                               transition: 'all 0.3s ease',
-                               '&:hover': {
-                                 transform: 'translateY(-2px)',
-                                 boxShadow: 4,
-                               }
-                             }}
-                             onClick={() => handlePlayClick(song.external_urls.spotify)}
-                           >
-                             <CardContent sx={{ p: 2 }}>
-                               <Box display="flex" alignItems="center" justifyContent="space-between">
-                                 <Box display="flex" alignItems="center" flex={1}>
-                                   <Avatar 
-                                     src={song.album.images[0]?.url} 
-                                     sx={{ mr: 2 }}
-                                   >
-                                     <AlbumIcon />
-                                   </Avatar>
-                                   <Box flex={1}>
-                                     <Typography variant="subtitle1" fontWeight="medium" noWrap>
-                                       {song.name}
-                                     </Typography>
-                                     <Typography variant="body2" color="text.secondary">
-                                       {song.artists.map((artist: any) => artist.name).join(", ")}
-                                     </Typography>
-                                   </Box>
-                                 </Box>
-                                 <Box display="flex" gap={1}>
-                                   <Tooltip title="Play">
-                                     <IconButton size="small" color="primary">
-                                       <PlayArrowIcon />
-                                     </IconButton>
-                                   </Tooltip>
-                                   <Tooltip title="Share">
-                                     <IconButton 
-                                       size="small" 
-                                       onClick={(e) => {
-                                         e.stopPropagation();
-                                         handleShareClick(song.external_urls.spotify);
-                                       }}
-                                     >
-                                       <ShareIcon />
-                                     </IconButton>
-                                   </Tooltip>
-                                 </Box>
-                               </Box>
-                             </CardContent>
-                           </Card>
-                         </Fade>
-                       ))
-                     ) : (
-                       <Typography color="text.secondary" textAlign="center" py={2}>
-                         No songs found for this mood
-                       </Typography>
-                     )}
-                   </Box>
-                 </Box>
-               </Box>
-            )}
-          </CardContent>
-        </Card>
-      </Fade>
+            </Box>
+          )}
+        </CardContent>
+      </Card>
+    </Fade>
   );
 };

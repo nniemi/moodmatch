@@ -1,12 +1,10 @@
 // moodmatch-dashboard/frontend/pages/index.tsx
 import { useState, useEffect } from "react";
-import { Recommendations } from "../components/Recommendations";
 import { MoodChatbot } from "../components/MoodChatbot";
 import LandingPage from "../components/LandingPage";
 import { checkAuthStatus, logout } from "../auth/spotifyAuth";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import { 
   Fade, 
@@ -32,7 +30,7 @@ export default function Home() {
   const [authenticated, setAuthenticated] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<any>(null);
-  const { currentMood, isLoading: themeLoading } = useTheme();
+  const { currentMood, isLoading: themeLoading, theme } = useTheme();
 
   useEffect(() => {
     // Check authentication status using secure server-side API
@@ -81,17 +79,16 @@ export default function Home() {
     <Box sx={{ 
       minHeight: '100vh', 
       background: currentMood 
-        ? 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)'
+        ? `linear-gradient(135deg, ${theme.palette.primary.main}20 0%, ${theme.palette.secondary.main}20 100%)`
         : 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
       transition: 'background 0.5s ease'
     }}>
-      {/* Enhanced App Bar */}
       <AppBar 
         position="static" 
         elevation={0}
         sx={{ 
           background: currentMood 
-            ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+            ? `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`
             : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
           backdropFilter: 'blur(10px)',
           transition: 'background 0.5s ease'
@@ -163,70 +160,9 @@ export default function Home() {
           </Box>
         </Fade>
 
-        {/* Enhanced Mood Chatbot */}
         <Slide direction="up" in={true} timeout={1200}>
           <Box>
             <MoodChatbot />
-          </Box>
-        </Slide>
-
-        {/* Additional Features Section */}
-        <Slide direction="up" in={true} timeout={1400}>
-          <Box mt={6}>
-            <Typography variant="h5" fontWeight="bold" mb={3}>
-              Discover More
-            </Typography>
-            <Box sx={{ 
-              display: 'grid', 
-              gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
-              gap: 3 
-            }}>
-              <Card 
-                elevation={4} 
-                sx={{ 
-                  p: 3, 
-                  borderRadius: 3,
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: 8,
-                  }
-                }}
-              >
-                <CardContent>
-                  <Typography variant="h6" fontWeight="bold" mb={2}>
-                    🎵 Music Recommendations
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" mb={2}>
-                    Get personalized music suggestions based on your current mood and listening history.
-                  </Typography>
-                  <Chip label="Coming Soon" color="primary" size="small" />
-                </CardContent>
-              </Card>
-
-              <Card 
-                elevation={4} 
-                sx={{ 
-                  p: 3, 
-                  borderRadius: 3,
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: 8,
-                  }
-                }}
-              >
-                <CardContent>
-                  <Typography variant="h6" fontWeight="bold" mb={2}>
-                    📊 Mood Analytics
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" mb={2}>
-                    Track your mood patterns and discover your music listening habits over time.
-                  </Typography>
-                  <Chip label="Coming Soon" color="secondary" size="small" />
-                </CardContent>
-              </Card>
-            </Box>
           </Box>
         </Slide>
       </Container>
