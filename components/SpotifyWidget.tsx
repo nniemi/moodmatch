@@ -58,10 +58,6 @@ export const SpotifyWidget: React.FC<Props> = ({ mood }) => {
     updateTheme();
   }, [mood]);
 
-  if (!theme) {
-    return <Typography>Loading theme...</Typography>;
-  }
-
   useEffect(() => {
     const searchPlaylists = async () => {
       if (!accessToken || !mood) return;
@@ -120,6 +116,15 @@ export const SpotifyWidget: React.FC<Props> = ({ mood }) => {
   const handleLogin = () => {
     window.location.href = getSpotifyAuthUrl();
   };
+
+  if (!theme) {
+    return (
+      <Paper elevation={3} sx={{ p: 2 }}>
+        <Typography variant="h6">Spotify Widget</Typography>
+        <Typography>Loading theme...</Typography>
+      </Paper>
+    );
+  }
 
   if (loading) {
     return (
