@@ -4,7 +4,7 @@ A modern Next.js application that analyzes your mood through AI and provides per
 
 ## 🎵 Demo
 
-![Demo GIF (Already logged in to Spotify)](https://imgur.com/a/hXDARyF)
+![Demonstration of functionality.](https://imgur.com/a/hXDARyF)
 
 
 ## 🚀 Features
